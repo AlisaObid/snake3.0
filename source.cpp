@@ -1,70 +1,19 @@
-#include <SFML/Graphics.hpp> 
 #include <iostream>
-#include <time.h>
-#include <conio.h>
-#include "Graphic.h"
-#include "Map.h"
 #include <chrono>
 #include <future>
+#include <SFML/Graphics.hpp> 
+#include "Main.h"
+
 
 //#define W 87
 
-void timer() 
-{
-	auto start = std::chrono::high_resolution_clock::now();
-	std::this_thread::sleep_until(start + std::chrono::seconds(1));
-}
+//enum Cell { up = 10, down = 11, left = 12, right = 13, apple = 1, empt = 0}; // направлени€ змейки, €блоко, пустые
+
 
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1025, 1025), "Alisa Studio Works!"); //открываем окно sfml
-	Graphic graphic(window); //дл€ вызова функций класса graphic
-	Map map; //дл€ вызова функций класса map
-	char mMove = 'd';
-	auto old = std::chrono::high_resolution_clock::now();
-	while (window.isOpen()) // пока окно открыто
-	{
-		//graphic.SetBackground(sf::Color(15, 15, 15, 255));
-		sf::Event event; //показывает действи€ пользовател€
-		while (window.pollEvent(event)) //игрок что-то делает
-		{
-			if (event.type == sf::Event::Closed) //закрывает ли пользователь окно
-				window.close(); // закрыть окно
-			if (event.type == sf::Event::KeyReleased) //вводим любой символ
-			{
-				
-				if (event.key.code == sf::Keyboard::Key::D)
-				{
-					mMove = 'd';
-					//std::cout << "d" << std::endl;
-				}
-				else if (event.key.code == sf::Keyboard::Key::S)
-				{
-					mMove = 's';
-					//std::cout << "s" << std::endl;
-				}
-				else if (event.key.code == sf::Keyboard::Key::A)
-				{      
-					mMove = 'a';
-					//std::cout << "a" << std::endl;
-				}
-				else if (event.key.code == sf::Keyboard::Key::W)
-				{
-					mMove = 'w';
-					//std::cout << "w" << std::endl;
-				}
-			}
-		}
-		if (std::chrono::high_resolution_clock::now() > old + std::chrono::seconds(1)) //прошла одна секунда после последнего движени€ змейки
-		{
-			std::cout << mMove << std::endl;
-			map.Play(mMove, graphic); //мен€ем карту
-			old = std::chrono::high_resolution_clock::now();
-		}
-
-		///window.clear(); //стираем все, что было на экране
-		//graphic.SetBackground(sf::Color(15, 15, 15, 255));
-	}
+	Main Main;
+	M
+	Main.run();
 }
-//добавить функцию dplus в класс smey и использовать в функции hod

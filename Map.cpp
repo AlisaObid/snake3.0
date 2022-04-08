@@ -1,152 +1,95 @@
 #include "Map.h"
 
 
-Map::Map() :
-	mCell(10, std::vector<int>(10, 0)) //номера €чеек змейки
+Map::Map()
 {
-	mCell[1][1] = 1; // ставим первую €чейку дл€ змейки
+	Map::mCell.resize(10, std::vector<int>(10, 0)); //номера €чеек змейки
+	mCell[1][1] = 10; // ставим первую €чейку дл€ змейки
 	//создание €чейки дл€ первого €блока рандомом
 	int mRandAppleI = rand() % 10;
-	mCell[1][2] = 101;
+	mCell[2][mRandAppleI] = 1;
 	mX = 1;
+	time = 1;
 	mY = 1;
-	mSize= 0;
-}
+	mYe = 1;
+	mXe = 1;
+	mSize = 0;
+};
 
 
-void Map::Play(char aMove, Graphic& graphic)	//сама игра
+void Map::Move(char aMove)
 {
-	//не выходит ли звейка за границы карты
-	if (((aMove == 'a' && (mX - 1 < 0 || (mCell[mY][mX - 1] > 0 && mCell[mY][mX - 1] < 101))) || 
-		 (aMove == 's' && (mY + 1 > 9 || (mCell[mY + 1][mX] > 0 && mCell[mY + 1][mX] < 101))) ||
-		 (aMove == 'd' && (mX + 1 > 9 || (mCell[mY][mX + 1] > 0 && mCell[mY][mX + 1] < 101))) ||
-		 (aMove == 'w' && (mY - 1 < 0 || (mCell[mY - 1][mX] > 0 && mCell[mY - 1][mX] < 101)))))
+	if (aMove == RIGHT) mCell[mY][mX] = 11; //куда идет голова 1
+	if (aMove == DOWN) mCell[mY][mX] = 12; //куда идет голова 2
+	if (aMove == LEFT) mCell[mY][mX] = 13; //куда идет голова 3
+	if (aMove == UP) mCell[mY][mX] = 10; //куда идет голова 4
+	int a = 0, b = 0; // a дл€ i, b дл€ j
+	bool EatApple = 0;
+	if (aMove == RIGHT) // если змейка идет вправо
 	{
-		// :(
-		std::cout << mY << ' ' << mX;
-		graphic.DrawText("Game Over. Your name's \"lox\" :(", 10, 10, sf::Color(255, 255, 255));
+		b++; // нужно j увеличивать на 1
+	}
+	if (aMove == DOWN) 
+	{
+		a++;
+	}
+	if (aMove == LEFT)
+	{
+		b--;
+	}
+	if (aMove == UP)
+	{
+		a--;
+	}
+	if (mX + b > 9 || mX + b < 0 ||
+		mY + a > 9 || mY + a < 0 ||
+		(mCell[mY + a][mX + b] > 9 && mCell[mY + a][mX + b] < 14))
+	{
 		while (true)
 		{
-			std::cout << "lox";
+			std::cout << '.'; // проигрыш
 		}
 	}
-	//змейка ходит
-	if (aMove == 'a')
+	if (mCell[mY + a][mX + b] == 1) // если мы съели €блоко
 	{
-		mX--;
-	}
-	else if (aMove == 's')
-	{
-		mY++;
-	}
-	else if (aMove == 'd')
-	{
-		mX++;
-	}
-	else if (aMove == 'w')
-	{
-		mY--;
-	}
-	//съела ли змейка €блоко
-	bool aEatApple = 0;
-	if (mCell[mY][mX] == 101)
-	{
-		aEatApple = 1;
-		//змейка растет
-		mSize++; // d++
-	}
-	//голова змейки ходит
-	mCell[mY][mX] = 1;
-	for (int i = 0; i < 10; i++)
-	{
-		for (int j = 0; j < 10; j++)
+		EatApple = 1; // то €блоко съедено
+		int apple1 = rand() % 10, apple2 = rand() % 10; // подбираем координаты нового €блока
+		while (mCell[apple1][apple2] > 9 && mCell[apple1][apple2] < 14)
 		{
-			std::cout << mCell[i][j] << ' ';
+			apple1 = rand() % 10;
+			apple2 = rand() % 10;
 		}
-		std::cout << std::endl;
+		mCell[apple1][apple2] = 1; // ставим новое €блоко
+		if (time < 5) time += 0.2;
 	}
-	int mNext = 1; //на какой €чейке змейки находитс€ след цикл
-	//удал€ем €чейку с хвостом (у нее максимальный номер) и мен€ем номера, если змейка не съела €блоко
-	int aI = mY, aJ = mX; //где мы находимс€
-	for (int i = 0; i < mSize; i++)
+	mCell[mY + a][mX + b] = mCell[mY][mX]; // голова передвинулась
+	mX += b;
+	mY += a;
+	if (!EatApple) //если не съели €блоко, то нужно обрезать хвост
 	{
-		std::cout << mNext << std::endl;
-		//ищем предыдущую €чейку змейки (ее номер равен mNext)
-		if (aI > 0 && mCell[aI - 1][aJ] == mNext)
-		{
-			mNext++; //следующа€ €чейка на 1 больше
-			aI--; //мен€ем позицию €чейки на которой мы находимс€
-			mCell[aI][aJ]++; //увеличиваем номер €чейки на которой мы находимс€
-			std::cout << '+' << std::endl;
-			if (mCell[aI][aJ] >= mSize) //мы на последней €чейке змейки?
-			{
-				if (aEatApple == 0) // если змейка съела €блоко, то ее нельз€ уменьшать
-				{
-					mCell[aI][aJ] = 0;
-				}
-				break;
-			}
-			continue;
-		}
-		if (aJ > 0 && mCell[aI][aJ - 1] == mNext)
-		{
-			mNext++;
-			aJ--;
-			mCell[aI][aJ]++;
-			std::cout << '+' << std::endl;
-			if (mCell[aI][aJ] >= mSize)
-			{
-				if (aEatApple == 0)
-				{
-					mCell[aI][aJ] = 0;
-				}
-				break;
-			}
-			continue;
-		}
-		if (aI < 9 && mCell[aI + 1][aJ] == mNext)
-		{
-			mNext++;
-			aI++;
-			mCell[aI][aJ]++;
-			std::cout << '+' << std::endl;
-			if (mCell[aI][aJ] >= mSize)
-			{
-				if (aEatApple == 0)
-				{
-					mCell[aI][aJ] = 0;
-				}
-				break;
-			}
-			continue;
-		}
-		if (aJ < 9 && mCell[aI][aJ + 1] == mNext)
-		{
-			mNext++;
-			aJ++;
-			mCell[aI][aJ]++;
-			std::cout << '+' << std::endl;
-			if (mCell[aI][aJ] >= mSize)
-			{
-				if (aEatApple == 0)
-				{
-					mCell[aI][aJ] = 0;
-				}
-				break;
-			}
-			continue;
-		}
+		int i = 0, j = 0; //куда идет хвост
+		if (mCell[mYe][mXe] == 11) j++; //куда идет хвост 1
+		if (mCell[mYe][mXe] == 12) i++; //куда идет хвост 2
+		if (mCell[mYe][mXe] == 13) j--; //куда идет хвост 3
+		if (mCell[mYe][mXe] == 10) i--; //куда идет хвост 4
+		mCell[mYe][mXe] = 0; // на месте старого хвоста теперь пуста€ €чейка
+		mYe += i; //мен€ем координаты хвоста
+		mXe += j;
 	}
-	//создаем новое €блоко
-	if (aEatApple) //создавать €блоко можно только тогда, когда змей съел предыдущее
-	{
-		int mRandI = rand() % 10, mRandJ = rand() % 10; // рандомный номер дл€ €блока
-		while (mCell[mRandI][mRandJ] > 0) // €блоко нельз€ создавать в змейке
-		{
-			mRandI = rand() % 10; // мен€ем координаты €блока
-			mRandJ = rand() % 10;
-		}
-		mCell[mRandI][mRandJ] = 101; // ставим €блоко
-	}
-	graphic.DrawMap(mCell);//вывод карты
+	//Graphic.drawMap(mCell, aWindow);
 }
+
+
+std::vector<std::vector<int>> Map::getCell()
+{
+	return mCell;
+}
+
+
+double Map::getTime()
+{
+	return time;
+}
+
+
+Map::~Map() {};

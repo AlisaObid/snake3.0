@@ -1,56 +1,84 @@
 #include "Graphic.h"
+#include <iostream>
+#include <chrono>
+#include <future>
+#include <SFML/Graphics.hpp> 
+#include "Main.h"
 
-Graphic::Graphic(sf::RenderWindow& aWindow) :
-	mWindow(aWindow)
+
+Graphic::Graphic() :
+	mWindow(sf::VideoMode(1025, 1025), "Alisa Tun Studio Works!") //открываем окно sfml
 {
-	mFont.loadFromFile("U:\\Evolution_v2\\font.ttf"); //путь до файла со шрифтом
-	mText.setFont(mFont);
-	mText.setCharacterSize(40);
-}
+};
 
-//написать текст
-void Graphic::DrawText(std::string aString,   
-	std::int16_t x, std::int16_t y, sf::Color aColor) //нарисовать текст
+
+void Graphic::drawMap(std::vector<std::vector<int>> aCell) // рисуем карту
 {
-	mText.setPosition(sf::Vector2f(y, x)); //где поставить текст
-	mText.setFillColor(aColor);//покрасили текст
-	mText.setString(aString); //выводим текст
-	mWindow.draw(mText); //показать его
-}
+	mWindow.clear(sf::Color(15, 15, 15)); //делаем черный фон
 
+	sf::RectangleShape rectangle;
+	rectangle.setSize(sf::Vector2f(104, 104));
+	rectangle.setOutlineColor(sf::Color(0, 0, 0));
+	rectangle.setOutlineThickness(5);
 
-void Graphic::SetBackground(sf::Color aColor) //фон
-{
-	//mWindow.clear(aColor);
-}
-
-
-void Graphic::DrawMap(std::vector<std::vector<int>> aMap) //нарисовать карту
-{
-	mWindow.clear();
-	for (int i = 0; i < 10; i++)
+	for (int j = 0; j < 10; j++)
 	{
-		for (int j = 0; j < 10; j++)
+		for (int i = 0; i < 10; i++)
 		{
-			sf::RectangleShape rectangle;
-			if (aMap[i][j] == 0)
+			if ((i + j) % 2)
 			{
-				rectangle.setFillColor(sf::Color(15, 15, 15)); //÷вет квадратов
+				rectangle.setFillColor(sf::Color(50, 50, 50));
 			}
-			if (aMap[i][j] > 0 && aMap[i][j] < 101)
+			else
 			{
-				rectangle.setFillColor(sf::Color(84, 255, 159)); //÷вет квадратов
+				rectangle.setFillColor(sf::Color(0, 0, 0));
 			}
-			if (aMap[i][j] == 101)
-			{
-				rectangle.setFillColor(sf::Color(155, 17, 30)); //÷вет квадратов
-			}
-			rectangle.setSize(sf::Vector2f(70, 70)); //размер квадратов
-			rectangle.setPosition(105 * j, 105 * i); //позици€ квадратов
-			mWindow.draw(rectangle); //–исуем квадрат
+			if (aCell[i][j] > 9) rectangle.setFillColor(sf::Color(36, 240, 128));
+			if (aCell[i][j] == 1) rectangle.setFillColor(sf::Color(200, 99, 99));
+			rectangle.setPosition(j * 104, i * 104);
+			mWindow.draw(rectangle);
 		}
-		std::cout << std::endl;
 	}
 	mWindow.display();
 }
 
+
+int Graphic::whole(char move)
+{
+	enum Direction {NUN = 0, UP = 'w', RIGHT = 'd', DOWN = 's', LEFT = 'a' };
+	while (mWindow.isOpen()) // пока окно открыто
+	{
+		//graphic.SetBackground(sf::Color(15, 15, 15, 255));
+		sf::Event event; //показывает действи€ пользовател€
+		while (mWindow.pollEvent(event)) //игрок что-то делает
+		{
+			if (event.type == sf::Event::Closed) //закрывает ли пользователь окно
+				mWindow.close(); // закрыть окно
+			if (event.type == sf::Event::KeyReleased) //вводим любой символ
+			{
+				
+				if (event.key.code == sf::Keyboard::Key::D)
+				{
+					move = RIGHT;
+					//std::cout << "d" << std::endl;
+				}
+				else if (event.key.code == sf::Keyboard::Key::S)
+				{
+					move = DOWN;
+					//std::cout << "s" << std::endl;
+				}
+				else if (event.key.code == sf::Keyboard::Key::A)
+				{      
+					move = LEFT;
+					//std::cout << "a" << std::endl;
+				}
+				else if (event.key.code == sf::Keyboard::Key::W)
+				{
+					move = UP;
+					//std::cout << "w" << std::endl;
+				}
+			}
+		} 
+		return move;
+	}
+}

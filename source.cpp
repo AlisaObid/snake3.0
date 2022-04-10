@@ -14,6 +14,5 @@
 int main()
 {
 	Main Main;
-	M
 	Main.run();
 }

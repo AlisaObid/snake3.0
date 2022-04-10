@@ -9,7 +9,7 @@ class Graphic
 {
 public:
 	Graphic();
-	void drawMap(std::vector<std::vector<int>> aCell);
+	void drawMap(std::vector<std::vector<int>> aCell, std::string aTime);
 	int whole(char move);
 
 private:

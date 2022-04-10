@@ -1,21 +1,32 @@
 #include "Graphic.h"
 #include "Map.h"
 #include "Main.h"
+#include <string>
 
 
 void Main::run()
 {
 	Graphic graphic;
 	Map map;
+	int time = 0; 
 	sf::Clock clock; //для тайминга
+	sf::Clock clock2; //для тайминга
 	float curTime = clock.getElapsedTime().asMilliseconds(); // это тоже
+	float curTime2 = clock2.getElapsedTime().asMilliseconds();
 	char move = Map::Direction::RIGHT; // сначала игрок будет идти направо
 	while (true)
 	{
-		graphic.drawMap(map.getCell()); //всегда будем рисовать карту
+		std::string strTime = std::to_string(time);
+		graphic.drawMap(map.getCell(), strTime); //всегда будем рисовать карту
 		move = graphic.whole(move); // смотрим на действия игрока
 		curTime = clock.getElapsedTime().asMilliseconds(); // для тайминга
-		if (curTime > 1000 / map.getTime()) // прошла одна секунда
+		curTime2 = clock2.getElapsedTime().asMilliseconds(); // для тайминга
+		if (curTime2 > 1000) // прошла одна секунда
+		{
+			time++; 
+			clock2.restart();
+		}
+		if (curTime > 1000 / map.getTime()) // змейке нужно подвинуться
 		{
 			map.Move(move); // двигаем змейку
 			clock.restart();

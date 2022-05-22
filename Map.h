@@ -1,11 +1,14 @@
 #ifndef MAP_H
 #define MAP_H
-#include <SFML/Graphics.hpp> 
+
+#include <ctime>
+
 #include <iostream>
 #include <vector>
 #include <string>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include "Graphic.h"
+
+#include <SFML/Graphics.hpp> 
+
 
 class Map
 {
@@ -15,6 +18,7 @@ public:
 	void Move(char aMove); //сама игра
 	std::vector<std::vector<int>> getCell();
 	double getTime();
+	int Size; //длина змейки
 	enum Direction {NUN = 0, UP = 'w', RIGHT = 'd', DOWN = 's', LEFT = 'a'}; // делаем неудобно
 
 private:
@@ -22,7 +26,6 @@ private:
 	std::vector<std::vector<int>> mCell; //номера ячеек змейки
 	int mX, mY; //координаты головы змейки
 	int mXe, mYe; // хвост змейки
-	int mSize; //длина змейки
 };
 
 #endif 

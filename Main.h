@@ -4,7 +4,6 @@
 class Main
 {
 public:
-
 	void run();
 };
 

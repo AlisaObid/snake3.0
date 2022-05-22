@@ -11,6 +11,7 @@ void Main::run()
 	int time = 0; 
 	sf::Clock clock; //для тайминга
 	sf::Clock clock2; //для тайминга
+	bool menu = 0;
 	float curTime = clock.getElapsedTime().asMilliseconds(); // это тоже
 	float curTime2 = clock2.getElapsedTime().asMilliseconds();
 	char move = Map::Direction::RIGHT; // сначала игрок будет идти направо
@@ -19,6 +20,7 @@ void Main::run()
 		std::string strTime = std::to_string(time);
 		graphic.drawMap(map.getCell(), strTime); //всегда будем рисовать карту
 		move = graphic.whole(move); // смотрим на действия игрока
+		if (!graphic.start) continue;
 		curTime = clock.getElapsedTime().asMilliseconds(); // для тайминга
 		curTime2 = clock2.getElapsedTime().asMilliseconds(); // для тайминга
 		if (curTime2 > 1000) // прошла одна секунда
@@ -26,7 +28,7 @@ void Main::run()
 			time++; 
 			clock2.restart();
 		}
-		if (curTime > 1000 / map.getTime()) // змейке нужно подвинуться
+		if (curTime > 800 / map.getTime()) // змейке нужно подвинуться
 		{
 			map.Move(move); // двигаем змейку
 			clock.restart();

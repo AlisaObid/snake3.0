@@ -9,9 +9,9 @@ class Graphic
 {
 public:
 	Graphic();
-	void drawMap(std::vector<std::vector<int>> aCell, std::string aTime);
+	void drawMap(std::vector<std::vector<int>> aCell, std::string aTime, std::string aSize);
 	void drawMenu();
-	void timmychinka(std::string aTime, int x, int y, int sizex, int sizey);
+	void timmychinka(std::string aTime, int x, int y, int sizex, int sizey, int xtext, int ytext, int textsize);
 	int whole(char move);
 	bool start = 0;
 

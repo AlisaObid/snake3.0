@@ -17,8 +17,14 @@ void Main::run()
 	char move = Map::Direction::RIGHT; // сначала игрок будет идти направо
 	while (true)
 	{
+		if (map.Size == 10)
+		{
+			map.changeLVL();
+		}
+
 		std::string strTime = std::to_string(time);
-		graphic.drawMap(map.getCell(), strTime); //всегда будем рисовать карту
+		std::string strSize = std::to_string(map.Size);
+		graphic.drawMap(map.getCell(), strTime, strSize); //всегда будем рисовать карту
 		move = graphic.whole(move); // смотрим на действия игрока
 		if (!graphic.start) continue;
 		curTime = clock.getElapsedTime().asMilliseconds(); // для тайминга

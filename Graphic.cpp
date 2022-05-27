@@ -53,9 +53,9 @@ Graphic::Graphic() :
 };
 
 
-void Graphic::timmychinka(std::string aTime, int x, int y, int sizex, int sizey)
+void Graphic::timmychinka(std::string aTime, int x, int y, int sizex, int sizey, int xtext, int ytext, int textsize)
 {
-	sf::RectangleShape timmy; //Прямоугольник, на котором будет время
+	sf::RectangleShape timmy; //Прямоугольник, на котором будет время или длина змейки
 	timmy.setSize(sf::Vector2f(sizex, sizey)); // его длина
 	timmy.setOutlineColor(sf::Color(48, 29, 2)); // цвет контура
 	timmy.setOutlineThickness(8); // длина контура
@@ -64,14 +64,14 @@ void Graphic::timmychinka(std::string aTime, int x, int y, int sizex, int sizey)
 	mWindow.draw(timmy); // рисуем его
 	sf::Font font;//шрифт 
 	bool b = font.loadFromFile("U:\\Evolution_v2\\Debug\\IndieFlower-Regular.ttf");//передаем нашему шрифту файл шрифта
-	sf::Text text(aTime, font, 65);//создаем текст
+	sf::Text text(aTime, font, textsize);//создаем текст
 	text.setFillColor(sf::Color(48, 29, 2));// цвет текста
-	text.setPosition(x + 100, y + 15); // позиция текста
+	text.setPosition(xtext, ytext); // позиция текста
 	mWindow.draw(text);
 }
 
 
-void Graphic::drawMap(std::vector<std::vector<int>> aCell, std::string aTime) // рисуем карту
+void Graphic::drawMap(std::vector<std::vector<int>> aCell, std::string aTime, std::string aSize) // рисуем карту
 {
 	if (!start)
 	{
@@ -116,8 +116,12 @@ void Graphic::drawMap(std::vector<std::vector<int>> aCell, std::string aTime) //
 			else
 			{
 				rectangle.setPosition(j * 104, i * 104);
+				if (aCell[i][j] == 44)
+				{
+					rectangle.setFillColor(sf::Color(70, 29, 2));
+				}
 				mWindow.draw(rectangle);
-				if (aCell[i][j] > 9) // рисуем змейку
+				if (aCell[i][j] > 9 && aCell[i][j] < 40) // рисуем змейку
 				{
 					std::srand(std::time(nullptr));
 					sf::CircleShape snake(48);
@@ -131,8 +135,8 @@ void Graphic::drawMap(std::vector<std::vector<int>> aCell, std::string aTime) //
 			}
 		}
 	}
-	timmychinka(aTime, 380, 0, 270, 65);
-	timmychinka(aTime, 650, -18, 135, 50);
+	timmychinka(aTime, 380, 0, 270, 65, 500, -13, 65);
+	timmychinka(aSize, 650, -18, 135, 50, 710, -14, 43);
 	mWindow.display();
 }
 
